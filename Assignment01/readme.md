@@ -5,7 +5,7 @@
 This repository contains the **individual** assignments for CS509 (First-Year M.Tech CSE, 2026).
 Assignment 1's individual task is **GEMM (General Matrix Multiplication)** — implemented as both
 a Simple (naive nested-loop) version and a Blocking (tiled) version, along with a CSR graph
-conversion helper used by the buddy tasks.
+conversion helper.
 
 ## Student Details
 
@@ -20,10 +20,9 @@ conversion helper used by the buddy tasks.
 | Field | Value |
 |---|---|
 | Language | C |
-| Compiler |  g++ (GCC) 13.2.0 |
+| Compiler | GCC — (Ubuntu 15.2.0-16ubuntu1) 15.2.0 |
+| OS / Machine | Ubuntu-WSL |
 
-| OS / Machine | <e.g. Ubuntu 24.04, x86_64> |
-| Timing Method | <e.g. std::chrono::high_resolution_clock> |
 
 ## Directory Structure
 
@@ -36,10 +35,21 @@ CS509_<EntryNumber>/
 |   |-- src/                      <- GEMM (simple + blocking) and CSR helper implementation
 |   |-- driver/                   <- driver program for assignment 1
 |   |-- tests/
-|   |   |-- gemm_test_perf_200x200x200.txt
-|   |   |-- gemm_test_perf_350x350x350.txt
-|   |   |-- gemm_test_perf_500x500x500.txt
-|   |   |-- gemm_test_perf_700x700x700.txt
+|   |   |-- test_01.txt
+        |-- test_02.txt
+        |-- test_03.txt
+        |-- test_04.txt
+        |-- test_05.txt
+        |-- test_06.txt
+        |-- test_07.txt
+        |-- test_08.txt
+        |-- test_09.txt
+        |-- test_10.txt
+        |-- test_200x200x200.txt
+|   |   |-- test_350x350x350.txt
+|   |   |-- test_500x500x500.txt
+|   |   |-- test_700x700x700.txt
+
 |   |   `-- malformed/            <- invalid-input test cases (error-handling)
 |   `-- outputs/                  <- captured run logs (optional)
 `-- ...
@@ -49,7 +59,7 @@ CS509_<EntryNumber>/
 
 ```bash
 cd common_wrapper
-g++ -O2 -std=c++17 -o wrapper wrapper.cpp
+gcc -O2 -std=c++17 -o wrapper wrapper.cpp
 ./wrapper
 ```
 
@@ -102,30 +112,45 @@ A is M x K, B is K x N, result C is M x N. All values are space-separated intege
 
 | File | Purpose |
 |---|---|
-| `src/gemm_simple.cpp` | Simple GEMM implementation |
-| `src/gemm_blocking.cpp` | Blocking GEMM implementation |
-| `src/csr_helper.cpp` | Adjacency-list to CSR conversion helper |
-| `driver/driver.cpp` | Reads input file, calls both GEMM versions, times and prints results |
+| `src/matrix_multiplication.c` | Simple GEMM implementation |
+| `src/tiling_multiplication.c` | Blocking GEMM implementation |
+| `driver/driver.c` | Reads input file, calls both GEMM versions, times and prints results |
 | `tests/*.txt` | Test input files (see result table below) |
 
 ### Compilation
 
 ```bash
 cd assignment_01
-g++ -O2 -std=c++17 -o driver driver/driver.cpp src/gemm_simple.cpp src/gemm_blocking.cpp -Isrc
+gcc -O2 -o gemm driver/driver.c src/matrix_multiplication.c src/tiling_multiplication.c src/readmatrix.c
 ```
 
 ### Execution
 
 ```bash
 # run a single test file
-./driver gemm tests/gemm_test_perf_200x200x200.txt
+./gemm tests/test_01.txt
 
 # run all test files in the tests/ directory
-./driver gemm --all tests/
+for file in tests/*.txt; do ./gemm "$file"; done
 ```
 
-*(Adjust the above to match your actual driver's argument format.)*
+### Timing Method
+Execution time is measured using `clock_gettime(CLOCK_MONOTONIC, ...)`
+from `<time.h>`, taken immediately before and after each algorithm call:
+```c
+struct timespec start, end;
+clock_gettime(CLOCK_MONOTONIC, &start);
+mulMatrix(m, k, n, a, b, c_simple);
+clock_gettime(CLOCK_MONOTONIC, &end);
+double simple_ms = (end.tv_sec - start.tv_sec) * 1000.0
+                  + (end.tv_nsec - start.tv_nsec) / 1e6;
+```
+`CLOCK_MONOTONIC` is used instead of wall-clock time since it isn't
+affected by system clock adjustments and measures pure elapsed time.
+Simple and blocking versions are timed independently, each with its own
+start/end pair. File reading, memory allocation, and all `printf` output
+are excluded from the timed region — only the multiply call itself is
+measured. Time is reported in milliseconds, to 6 decimal places.
 
 ### Test Cases and Result Table
 
@@ -133,22 +158,20 @@ g++ -O2 -std=c++17 -o driver driver/driver.cpp src/gemm_simple.cpp src/gemm_bloc
 
 | Test File | Size (M=K=N) | Multiply-adds | Simple Time (ms) | Blocking Time (ms) | Block Size | Speedup | Status |
 |---|---|---|---|---|---|---|---|
-| gemm_test_perf_200x200x200.txt | 200 | 8,000,000 | | | | | |
-| gemm_test_perf_350x350x350.txt | 350 | 42,875,000 | | | | | |
-| gemm_test_perf_500x500x500.txt | 500 | 125,000,000 | | | | | |
-| gemm_test_perf_700x700x700.txt | 700 | 343,000,000 | | | | | |
+| test_200x200x200.txt | 200 | 8,000,000 | 7.184894 ms | 5.828869 ms | 52 | | Successfully Completed |
+| test_350x350x350.txt | 350 | 42,875,000 | 29.596883 ms | 36.246113 ms | 52 | | Successfully Completed |
+| test_500x500x500.txt | 500 | 125,000,000 | 104.505870 ms | 122.943591 ms | 52 | | Successfully Completed |
+| test_700x700x700.txt | 700 | 343,000,000 | 348.054947 ms | 300.426352 ms | 52 | | Successfully Completed |
 
 **Malformed / invalid-input tests (error-handling)**
 
 | Test File | What's Wrong | Expected Driver Behaviour | Actual Behaviour | Status |
 |---|---|---|---|---|
-| gemm_test_21_empty_file.txt | File is completely empty | Clear error, no crash | | |
-| gemm_test_22_missing_rows.txt | B matrix rows missing | Clear parsing/EOF error | | |
-| gemm_test_23_row_too_short.txt | A row has fewer values than K | Clear format error | | |
-| gemm_test_24_row_too_long.txt | A row has more values than K | Clear format error | | |
-| gemm_test_25_non_numeric_token.txt | Non-numeric token in place of integer | Clear parse error | | |
-| gemm_test_26_zero_dimension.txt | M declared as 0 | Documented graceful handling or clear rejection | | |
-| gemm_test_27_negative_dimension.txt | M declared as -2 | Clear rejection, no invalid memory allocation | | |
+| Empty_file.txt | File is completely empty | Clear error, no crash | expected 'M K N' on the first line of the input file. | |
+| missing_rows.txt | B matrix rows missing | Clear parsing/EOF error | expected 6 integers for matrix, but got fewer. | |
+| row_too_short.txt | A row has fewer values than K | Clear format error | expected 6 integers for matrix, but got fewer. | |
+| non_numeric_token.txt | Non-numeric token in place of integer | Clear parse error | expected 6 integers for matrix, but got fewer. | |
+| negative_dimension.txt | M declared as -2 | Clear rejection, no invalid memory allocation | Segmentation fault  | |
 
 ### Complexity
 
@@ -159,4 +182,4 @@ g++ -O2 -std=c++17 -o driver driver/driver.cpp src/gemm_simple.cpp src/gemm_bloc
 
 ### References
 
-- <fill in any references used, e.g. course slides, textbook sections, blog posts on cache blocking>
+Took reference from some youtube lectures and browsed some online platforms for blocking matrix multiplication algorithm
