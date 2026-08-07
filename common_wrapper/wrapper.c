@@ -13,7 +13,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
-#include "wrapper.h"
+
+typedef struct {
+    const char *name;         /* Assignment name */
+    const char *build_cmd;    /* Command to build the assignment */
+    const char *driver_path;  /* Path to the assignment's driver executable */
+    const char *tests_dir;    /* Directory containing test files */
+} Assignment;
 
 static Assignment assignments[] = {
     {
