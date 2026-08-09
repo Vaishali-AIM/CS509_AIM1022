@@ -1,5 +1,5 @@
-#ifndef DRIVER_H
-#define DRIVER_H
+#ifndef BF_DRIVER_H
+#define BF_DRIVER_H
 
  /* Runs the full Bellman-Ford pipeline on the given input file */
 

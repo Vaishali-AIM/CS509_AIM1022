@@ -31,6 +31,27 @@ static Assignment assignments[] = {
             "Assignment01/src/readmatrix.c",
         "Assignment01/driver/driver",
         "Assignment01/tests"
+    },
+    {
+         "Assignment 02 - Bellman-Ford",
+        "gcc -Wall -O2 -D_POSIX_C_SOURCE=199309L "
+            "-Iutilities -IAssignment02/src -IAssignment02/driver "
+            "-o Assignment02/driver/bf_driver "
+            "Assignment02/driver/bf_driver.c "
+            "Assignment02/src/bellman_ford.c "
+            "utilities/csr.c",
+        "Assignment02/driver/bf_driver",
+        "Assignment02/tests"
+    },
+    {
+         "Assignment 02 - Floyd-Warshall",
+        "gcc -Wall -O2 -D_POSIX_C_SOURCE=199309L "
+            "-Iutilities -IAssignment02/src -IAssignment02/driver "
+            "-o Assignment02/driver/fw_driver "
+            "Assignment02/driver/fw_driver.c "
+            "Assignment02/src/floyd_warshall.c ",
+        "Assignment02/driver/fw_driver",
+        "Assignment02/tests"
     }
     /* Add one entry per future assignment */
 };
