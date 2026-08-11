@@ -24,9 +24,7 @@ CSRGraph readAdjacencyListAsCSR(FILE *filename, int isWeighted, int isDirected) 
     if (graph.edges < 0)
         failWithFormatError("Number of edges (E) cannot be negative.");
 
-    /* Directed graphs: E entries total across all adjacency lists.
-     * Undirected graphs: each edge appears in two adjacency lists, so 2*E
-     * entries total. */
+    
     int maxPossibleEntries = isDirected ? graph.edges : 2 * graph.edges;
     printf("Vertices: %d, Edges: %d\n", graph.vertices, graph.edges);
 
@@ -61,17 +59,14 @@ CSRGraph readAdjacencyListAsCSR(FILE *filename, int isWeighted, int isDirected) 
                 if (fscanf(filename, "%d", &graph.edgeWeights[nextFreeSlot]) != 1)
                     failWithFormatError("expected an edge weight after the neighbor id, but the file ended early or contained non-integer data.");
 
-                /* Negative weights are only valid on directed edges — a
-                 * negative undirected edge is itself a negative cycle,
-                 *  so it's rejected here for undirected graphs.
-                 * Directed graphs (Bellman-Ford) are allowed negatives. */
+                
                 if (!isDirected && graph.edgeWeights[nextFreeSlot] < 0)
                     failWithFormatError("negative edge weights are not allowed on undirected edges.");
             }
             nextFreeSlot++;
         }
 
-        // next vertex's section starts wherever we just finished writing
+       
         graph.rowPtr[v + 1] = nextFreeSlot;
     }
 
