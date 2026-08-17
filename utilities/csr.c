@@ -3,6 +3,7 @@
 #include <strings.h>
 #include "csr.h"
 
+
 static void failWithFormatError(const char *message) {
     fprintf(stderr, "Error: Invalid input file format - %s\n", message);
     exit(1);
@@ -33,7 +34,7 @@ CSRGraph readAdjacencyListAsCSR(FILE *filename, int isWeighted, int isDirected) 
     graph.edgeWeights = isWeighted ? malloc(maxPossibleEntries * sizeof(int)) : NULL;
 
     graph.rowPtr[0] = 0;
-    int nextFreeSlot = 0;   // tracks where to write the next neighbor in col_idx
+    int nextFreeSlot = 0;  
 
     for (int v = 0; v < graph.vertices; v++) {
         int vertexId, degree;
@@ -47,7 +48,7 @@ CSRGraph readAdjacencyListAsCSR(FILE *filename, int isWeighted, int isDirected) 
         if (degree < 0)
             failWithFormatError("a vertex's degree cannot be negative.");
 
-        // add the neighbors of vertex v to the colIndex array
+        
         for (int i = 0; i < degree; i++) {
             if (fscanf(filename, "%d", &graph.colIndex[nextFreeSlot]) != 1)
                 failWithFormatError("Expected a neighbor vertex id, but the file ended early or contained non-integer data");

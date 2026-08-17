@@ -2,6 +2,9 @@
 #define CSR_H
 
 #include <stdio.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct {
     int vertices;       /* V */
@@ -23,5 +26,7 @@ int readSourceVertex(FILE *filename);
 
 void freeCSRGraph(CSRGraph *graph);
 void printCSRGraph(CSRGraph *graph);
-
+#ifdef __cplusplus
+}
+#endif
 #endif
