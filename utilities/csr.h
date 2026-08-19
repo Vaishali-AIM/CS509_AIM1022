@@ -19,9 +19,6 @@ typedef struct {
 
 CSRGraph readAdjacencyListAsCSR(FILE *filename, int isWeighted, int isDirected);
 
-/* Reads a trailing "SOURCE s" line. Only used by algorithms with a single
- * source vertex (e.g. Bellman-Ford) — not called for Triangle Counting,
- * Betweenness Centrality, or Connected Components. */
 int readSourceVertex(FILE *filename);
 
 void freeCSRGraph(CSRGraph *graph);

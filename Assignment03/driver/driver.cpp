@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    CSRGraph graph = readAdjacencyListAsCSR(fp, 1, 0); // weighted, undirected
+    CSRGraph graph = readAdjacencyListAsCSR(fp, 1, 0); 
     fclose(fp);
 
     MSTResult kruskalResult = kruskalMST(&graph);

@@ -6,14 +6,12 @@
 #include <cstdlib>
 #include <climits>
 
-// ================= Shared helper =================
 void freeMSTResult(MSTResult *result) {
     free(result->edges);
     result->edges = nullptr;
     result->edgeCount = 0;
 }
 
-// ================= Kruskal =================
 namespace {
     struct DSU {
         std::vector<int> parent, rank_;
@@ -46,7 +44,6 @@ MSTResult kruskalMST(const CSRGraph *graph) {
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    // Step 1: extract unique undirected edges from CSR (neighbor > v avoids duplicates)
     std::vector<MSTEdge> edgeList;
     edgeList.reserve(graph->rowPtr[graph->vertices] / 2);
     for (int v = 0; v < graph->vertices; v++) {
@@ -58,11 +55,10 @@ MSTResult kruskalMST(const CSRGraph *graph) {
         }
     }
 
-    // Step 2: sort by weight
     std::sort(edgeList.begin(), edgeList.end(),
               [](const MSTEdge &a, const MSTEdge &b) { return a.weight < b.weight; });
 
-    // Step 3: DSU-based edge selection
+    
     DSU dsu(graph->vertices);
     for (const auto &e : edgeList) {
         if (result.edgeCount == graph->vertices - 1) break;
@@ -78,7 +74,6 @@ MSTResult kruskalMST(const CSRGraph *graph) {
     return result;
 }
 
-// ================= Prim =================
 MSTResult primMST(const CSRGraph *graph) {
     MSTResult result;
     result.edges = (MSTEdge *)malloc((graph->vertices - 1) * sizeof(MSTEdge));
@@ -92,12 +87,11 @@ MSTResult primMST(const CSRGraph *graph) {
     std::vector<int> parent(V, -1);
     std::vector<bool> inMST(V, false);
 
-    // min-heap of (key, vertex)
     std::priority_queue<std::pair<int, int>,
                          std::vector<std::pair<int, int>>,
                          std::greater<std::pair<int, int>>> pq;
 
-    int startVertex = 0; // recommended start, per assignment
+    int startVertex = 0;
     key[startVertex] = 0;
     pq.push({0, startVertex});
 

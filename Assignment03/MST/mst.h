@@ -8,8 +8,8 @@ struct MSTEdge {
 };
 
 struct MSTResult {
-    MSTEdge *edges;         // selected MST edges
-    int edgeCount;           // number of edges actually selected
+    MSTEdge *edges;        
+    int edgeCount;      
     long long totalWeight;
     double executionTimeMs;
 };
