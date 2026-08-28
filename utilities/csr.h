@@ -7,13 +7,11 @@ extern "C" {
 #endif
 
 typedef struct {
-    int vertices;       /* V */
-    int edges;           /* E, as given in the file (see readAdjacencyListAsCSR
-                           * for how this relates to array sizes for
-                           * directed vs undirected graphs) */
-    int *rowPtr;          /* size vertices + 1 */
-    int *colIndex;         /* neighbor ids */
-    int *edgeWeights;       /* NULL if isWeighted was 0 */
+    int vertices;      
+    int edges;           
+    int *rowPtr;         
+    int *colIndex;        
+    int *edgeWeights;      
 } CSRGraph;
 
 
