@@ -52,7 +52,41 @@ static Assignment assignments[] = {
             "Assignment02/src/floyd_warshall.c ",
         "Assignment02/driver/fw_driver",
         "Assignment02/tests"
+    },
+    {
+        "Assignment 03 - MST (Kruskal's + Prim's)",
+        "gcc -Wall -O2 -D_POSIX_C_SOURCE=200809L "
+            "-Iutilities -IAssignment03/src -IAssignment03/driver "
+            "-o Assignment03/driver/mst_driver "
+            "Assignment03/driver/driver.c "
+            "Assignment03/src/mst.c "
+            "utilities/csr.c",
+        "Assignment03/driver/mst_driver",
+        "Assignment03/tests"
+    },   
+    {
+        "Assignment 04 - Vertex Coloring",
+        "gcc -Wall -O2  "
+            "-Iutilities -IAssignment04/src -IAssignment04/driver "
+            "-o Assignment04/driver/vc_driver "
+            "Assignment04/driver/vc_driver.c "
+            "Assignment04/src/vc.c "
+            "utilities/csr.c",
+        "Assignment04/driver/vc_driver",
+        "Assignment04/tests"
+    },
+    {
+        "Assignment 04 - PageRank",
+        "gcc -Wall -O2  "
+            "-Iutilities -IAssignment04/src -IAssignment04/driver "
+            "-o Assignment04/driver/pr_driver "
+            "Assignment04/driver/pr_driver.c "
+            "Assignment04/src/pr.c "
+            "utilities/csr.c",
+        "Assignment04/driver/pr_driver",
+        "Assignment04/tests"
     }
+    
     /* Add one entry per future assignment */
 };
 
