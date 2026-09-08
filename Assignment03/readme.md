@@ -59,8 +59,10 @@ formatted output) is not yet built.
 ## Compilation and Execution (current state)
 
 ```bash
-g++ -O2 -std=c++17 -o test_both csr.cpp mst_common.cpp kruskal.cpp prim.cpp test_kruskal_driver.cpp
-./test_both tests/mst_10.txt
+cd Assignment03
+make clean
+make 
+./mst_driver tests/<file_name>.txt
 ```
 
 ## MST Results Table

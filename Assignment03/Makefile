@@ -1,27 +1,25 @@
 CC = gcc
-CXX = g++
-CFLAGS = -Wall -O2
-CXXFLAGS = -Wall -O2 -std=c++17
+CFLAGS = -Wall -O2 -D_POSIX_C_SOURCE=200809L
 
 UTIL = ../utilities
-MST = MST
-DRIVER = Driver
+SRC = src
+DRIVERDIR = driver
 
-INCLUDES = -I$(UTIL) -I$(MST)
+INCLUDES = -I$(UTIL) -I$(SRC)
 
 OBJS = csr.o mst.o driver.o
 
-run: $(OBJS)
-	$(CXX) $(CXXFLAGS) -o run $(OBJS)
+mst_driver: $(OBJS)
+	$(CC) $(CFLAGS) -o mst_driver $(OBJS)
 
 csr.o: $(UTIL)/csr.c $(UTIL)/csr.h
 	$(CC) $(CFLAGS) $(INCLUDES) -c $(UTIL)/csr.c -o csr.o
 
-mst.o: $(MST)/mst.cpp $(MST)/mst.h $(UTIL)/csr.h
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $(MST)/mst.cpp -o mst.o
+mst.o: $(SRC)/mst.c $(SRC)/mst.h $(UTIL)/csr.h
+	$(CC) $(CFLAGS) $(INCLUDES) -c $(SRC)/mst.c -o mst.o
 
-driver.o: $(DRIVER)/driver.cpp $(MST)/mst.h $(UTIL)/csr.h
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $(DRIVER)/driver.cpp -o driver.o
+driver.o: $(DRIVERDIR)/driver.c $(SRC)/mst.h $(UTIL)/csr.h
+	$(CC) $(CFLAGS) $(INCLUDES) -c $(DRIVERDIR)/driver.c -o driver.o
 
 clean:
-	rm -f *.o run
+	rm -f *.o mst_driver
